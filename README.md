@@ -9,6 +9,8 @@
 
 The **toc_page** plugin is designed for creating and managing custom table-of-contents trees on a Cotonti website. It allows administrators to manually build documentation structures, knowledge bases, or navigation menus by combining categories, pages, and external links.
 
+**[Overview and purpose of the plugin Table of Contents Page](https://abuyfile.com/en/usersblog/review-toc-page-cotonti)**
+
 <img width="1536" height="1024" alt="Table of Contents Page plugin for Cotonti v1 +, PHP 8 5+, MySQL 8 4" src="https://github.com/user-attachments/assets/3a135a65-7271-470c-932f-b1f32a6064fb" />
 
 
@@ -62,7 +64,7 @@ The plugin supports multilingualism through the i18n plugin: if it is active, ca
 
 ### Requirements
 
-- Cotonti Siena 1.0+ or a compatible version
+- Cotonti 1.0+ or a compatible version
 - Pages module (page)
 - PHP 8.5+
 - MySQL 8.0+ (or compatible PDO driver)
@@ -510,6 +512,8 @@ ___
 ### Общая информация
 
 Плагин **toc_page** создаёт и управляет произвольными деревьями оглавления. Он хранит деревья и их элементы в собственных таблицах базы данных и не зависит от структуры категорий модуля Pages.
+
+**[Обзор и назначение плагина Table of Contents Page](https://abuyfile.com/ru/usersblog/review-toc-page-cotonti)**
 
 Плагин предоставляет административный интерфейс для создания деревьев, добавления в них элементов трёх типов (категория, страница, произвольная ссылка), настройки иерархии, порядка и видимости. Для вывода дерева на сайте используется PHP-функция `cot_toc_page_render()`.
 
