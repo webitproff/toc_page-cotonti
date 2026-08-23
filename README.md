@@ -1,4 +1,463 @@
 
+# toc_page — Table of Contents Plugin for Cotonti
+
+**Plugin code:** toc_page  
+**Version:** 1.0.1  
+**Author:** webitproff  
+**License:** BSD  
+**Source code:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
+
+The **toc_page** plugin is designed for creating and managing custom table-of-contents trees on a Cotonti website. It allows administrators to manually build documentation structures, knowledge bases, or navigation menus by combining categories, pages, and external links.
+
+<img width="1536" height="1024" alt="Table of Contents Page plugin for Cotonti v1 +, PHP 8 5+, MySQL 8 4" src="https://github.com/user-attachments/assets/3a135a65-7271-470c-932f-b1f32a6064fb" />
+
+
+
+---
+
+## Table of Contents
+
+### Technical Documentation
+
+- [Overview](#overview-en)
+- [Requirements](#requirements-en)
+- [Installation and Uninstallation](#installation-and-uninstallation-en)
+- [File Structure](#file-structure-en)
+- [Database](#database-en)
+- [Plugin Functions](#plugin-functions-en)
+- [Administrative Interface](#administrative-interface-en)
+- [Templates](#templates-en)
+- [Localization](#localization-en)
+- [Settings](#settings-en)
+- [Usage Examples](#usage-examples-en)
+- [Notes](#notes-en)
+
+### User Guide
+
+- [Right After Installation](#right-after-installation-en)
+- [First Look at the Plugin Page](#first-look-at-the-plugin-page-en)
+- [Getting to Know the Tabs](#getting-to-know-the-tabs-en)
+- [Creating Your First Tree](#creating-your-first-tree-en)
+- [What a Tree Is and Why You Need It](#what-a-tree-is-and-why-you-need-it-en)
+- [Opening a Tree for Filling](#opening-a-tree-for-filling-en)
+- [Add Element Form](#add-element-form-en)
+- [Adding a Category Element](#adding-a-category-element-en)
+- [Adding a Page Element](#adding-a-page-element-en)
+- [Adding a Custom Link Element](#adding-a-custom-link-element-en)
+- [Managing Elements After Adding](#managing-elements-after-adding-en)
+- [Saving Changes](#saving-changes-en)
+- [Conclusion](#conclusion-en)
+
+---
+
+## Technical Documentation
+
+### Overview
+
+The **toc_page** plugin creates and manages custom table-of-contents trees. It stores trees and their elements in its own database tables and does not depend on the category structure of the Pages module.
+
+The plugin provides an administrative interface for creating trees, adding elements of three types (category, page, custom link), configuring hierarchy, order, and visibility. To display the tree on the website, the PHP function `cot_toc_page_render()` is used.
+
+The plugin supports multilingualism through the i18n plugin: if it is active, category and page titles are automatically taken from localized data.
+
+### Requirements
+
+- Cotonti Siena 1.0+ or a compatible version
+- Pages module (page)
+- PHP 8.5+
+- MySQL 8.0+ (or compatible PDO driver)
+- i18n plugin recommended for multilingualism
+
+### Installation and Uninstallation
+
+#### Installation
+
+1. Copy the `toc_page` folder to the `plugins/` directory of your Cotonti site.
+2. Go to the administration panel → **Extensions**.
+3. Find the **Table of Contents Page** plugin and click **Install**.
+4. If necessary, configure the `default_tree` parameter in the plugin settings.
+
+During installation, Cotonti automatically executes the SQL file `setup/toc_page.install.sql`, which creates the tables `cot_toc_page_trees` and `cot_toc_page_items` with your site’s prefix.
+
+#### Uninstallation
+
+When uninstalling the plugin, Cotonti executes the SQL file `setup/toc_page.uninstall.sql`, which drops both tables. All plugin data will be permanently deleted.
+
+### File Structure
+
+```
+plugins/toc_page/
+├── toc_page.setup.php          // Plugin metadata and configuration
+├── toc_page.global.php         // Global initialization
+├── toc_page.functions.php      // Core plugin functions
+├── toc_page.admin.php          // Administrative interface
+├── setup/
+│   ├── toc_page.install.sql    // SQL for installation
+│   └── toc_page.uninstall.sql  // SQL for uninstallation
+├── tpl/
+│   ├── toc_page.admin.tpl      // Admin template
+│   └── toc_page.tpl            // Tree output template
+└── lang/
+    └── toc_page.ru.lang.php    // Russian language file
+```
+
+#### File Descriptions
+
+- **toc_page.setup.php** — contains plugin metadata (code, name, description, version, author, license, requirements) and the configuration parameter `default_tree`.
+- **toc_page.global.php** — includes the plugin functions file via `cot_incfile('toc_page', 'plug')`.
+- **toc_page.functions.php** — registers the plugin tables in Cotonti and declares public functions for working with trees.
+- **toc_page.admin.php** — handles actions in the admin panel, prepares data for the template, performs CRUD operations with trees and elements.
+- **toc_page.install.sql** — SQL queries for creating plugin tables.
+- **toc_page.uninstall.sql** — SQL queries for dropping plugin tables.
+- **toc_page.admin.tpl** — administrative template on XTemplate.
+- **toc_page.tpl** — frontend tree output template.
+- **toc_page.ru.lang.php** — Russian interface strings.
+
+### Database
+
+#### Table `cot_toc_page_trees`
+
+Stores table-of-contents trees.
+
+| Field | Type | Description |
+|---|---|---|
+| `tree_id` | INT UNSIGNED, AUTO_INCREMENT | Unique tree identifier |
+| `tree_title` | VARCHAR(255) | Tree name |
+| `tree_description` | TEXT NULL | Tree description |
+| `tree_created` | INT UNSIGNED | Creation time (Unix timestamp) |
+| `tree_updated` | INT UNSIGNED | Last update time (Unix timestamp) |
+
+#### Table `cot_toc_page_items`
+
+Stores tree elements.
+
+| Field | Type | Description |
+|---|---|---|
+| `item_id` | INT UNSIGNED, AUTO_INCREMENT | Unique element identifier |
+| `tree_id` | INT UNSIGNED | ID of the tree to which the element belongs |
+| `parent_id` | INT UNSIGNED | ID of the parent element; 0 means top level |
+| `item_type` | ENUM('category','page','custom') | Element type |
+| `item_ref` | VARCHAR(255) | Reference to object: category code for category, page ID for page, empty for custom |
+| `item_title` | VARCHAR(255) | Custom element title; if empty, the object’s title is used |
+| `item_url` | VARCHAR(255) | URL for custom link |
+| `item_sort` | INT UNSIGNED | Sort order among elements with the same parent |
+| `item_enabled` | TINYINT UNSIGNED | Visibility flag: 1 — enabled, 0 — hidden |
+
+### Plugin Functions
+
+All functions are declared in the `toc_page.functions.php` file.
+
+#### `toc_page_get_tree($treeId)`
+
+Returns a nested array of elements for the specified tree. Executes an SQL query against the `cot_toc_page_items` table with the condition `tree_id = ? AND item_enabled = 1`, sorts by `item_sort ASC`, then recursively groups elements by `parent_id`.
+
+**Parameters:**
+- `$treeId` (int) — tree ID.
+
+**Returns:** an array of elements with the `children` key for nested elements.
+
+#### `cot_toc_page_render($treeId, $tpl = 'toc_page')`
+
+Retrieves the tree via `toc_page_get_tree()` and passes it to `toc_page_display()` for rendering.
+
+**Parameters:**
+- `$treeId` (int) — tree ID.
+- `$tpl` (string) — template name without the `.tpl` extension; defaults to `toc_page`.
+
+**Returns:** HTML code of the rendered tree.
+
+#### `toc_page_display($items, $level, $tpl)`
+
+Recursively traverses elements and generates HTML using XTemplate. For each element, the URL and title are determined:
+
+- **category** — uses `$item['item_ref']` as the category code. The URL is built via `cot_url('page', ['c' => $code])`. The title is taken from localized data if available, otherwise from the Cotonti page structure.
+- **page** — `$item['item_ref']` is cast to an integer and used as the page ID. The URL and title are retrieved from the pages table with localization.
+- **custom** — URL is taken from `$item['item_url']`, title from `$item['item_title']` or from the URL.
+
+If the title is empty, the element is skipped. If the URL is empty but the title exists, the element is displayed as plain text (separator), and nested elements are processed.
+
+**Parameters:**
+- `$items` (array) — array of tree elements.
+- `$level` (int) — current nesting level.
+- `$tpl` (string) — template name.
+
+**Returns:** HTML code of the list.
+
+#### `toc_page_i18n_cat_title($catCode)`
+
+Returns the localized category title if the i18n plugin is active and a translation exists for the current locale. Otherwise returns `null`.
+
+#### `toc_page_i18n_page_title($pageId)`
+
+Returns the localized page title from the i18n table if the i18n plugin is active and the record exists. Otherwise returns `null`.
+
+### Administrative Interface
+
+The plugin admin panel is implemented in the `toc_page.admin.php` file. Access it via **Administration → Table of Contents Page**.
+
+#### Tabs
+
+- **Trees** — list of trees, creation, renaming, deletion.
+- **Edit Tree** — managing elements of the selected tree.
+
+#### Actions on the “Trees” Tab
+
+- `add` — create a new tree. Fields: `tree_title`, `tree_desc`.
+- `edit_tree` — display the form for editing the tree name and description.
+- `update_tree` — update the tree name and description.
+- `delete` — delete the tree and all its elements.
+
+#### Actions on the “Edit Tree” Tab
+
+- `save` — save changes to elements from the table (titles, parents, order, visibility).
+- `add_item` — add a new element. Fields: `item_type`, `item_ref_cat` (for category), `item_ref_page` (for page), `item_url` (for link), `item_title`, `parent_id`.
+- `delete_item` — delete an element and all its descendants.
+
+#### Parent List Generation
+
+When displaying each element in the table, a dropdown list of all tree elements except itself is built. This allows changing the parent directly in the table.
+
+### Templates
+
+#### Admin template: `tpl/toc_page.admin.tpl`
+
+Contains the layout of both tabs, the filter form, and the element table. Uses XTemplate blocks:
+
+- `MAIN.TREES_ROW` — tree table row.
+- `MAIN.EDIT_TREE_FORM` — form for editing tree name and description (shown on `edit_tree` action).
+- `MAIN.EDIT_ITEM` — element table row.
+
+#### Output template: `tpl/toc_page.tpl`
+
+Used by `cot_toc_page_render()` to display the tree on the site. Main blocks:
+
+- `LIST` — level list.
+- `LIST.ROW` — list element. Contains a condition: if `{ROW_URL}` is not empty, a link is displayed; otherwise, plain text.
+
+### Localization
+
+Interface strings are located in `lang/toc_page.ru.lang.php`. Main keys:
+
+- `toc_page_title` — plugin name
+- `toc_page_tab_trees` — “Trees” tab
+- `toc_page_tab_edit` — “Edit Tree” tab
+- `toc_page_tree_items` — “Items” button
+- `toc_page_edit_tree_meta` — “Edit” button
+- `toc_page_msg_tree_updated` — “Tree updated” message
+- and other strings for fields, actions, and messages.
+
+### Settings
+
+One configuration parameter is defined in `toc_page.setup.php`:
+
+- `default_tree` (type `string`) — default tree ID. Used if the function is called without an argument.
+
+The default value is `0`, meaning no tree.
+
+### Usage Examples
+
+#### Displaying a tree in a site template
+
+```
+{PHP|cot_toc_page_render(1)}
+```
+
+Here `1` is the tree ID. The function returns the HTML code of the tree.
+
+#### Displaying with a custom template
+
+```
+{PHP|cot_toc_page_render(1, 'my_custom_toc')}
+```
+
+In this case, the file `tpl/my_custom_toc.tpl` will be used.
+
+### Notes
+
+- The plugin does not modify the structure of Cotonti tables.
+- All plugin data is stored in its own tables and is destroyed when the plugin is uninstalled.
+- For correct work with categories, `item_ref` stores the category code, not its ID.
+- When a `custom` element has an empty URL and nested elements, it acts as a separator and is not displayed as a link.
+- The plugin supports an unlimited number of trees and elements.
+
+---
+
+## User Guide
+
+### Right After Installation
+
+After the plugin is installed, a new menu item appears in the Cotonti administration panel. It is located under **“Administration”** and is named **“Table of Contents Page”**. Click on it.
+
+The plugin page will open. It is almost empty because you have not created any trees yet. Don’t worry: this is where all work begins.
+
+### First Look at the Plugin Page
+
+You will see the heading **“Table of Contents Page”**. Below it are two tabs: **“Trees”** and **“Edit Tree”**. The “Trees” tab is currently active.
+
+Inside the “Trees” tab there are two main blocks:
+
+- **Tree List** — a table where all your created trees will be displayed. It is empty now.
+- **Add Tree** — the form with which you will create the first tree.
+
+### Getting to Know the Tabs
+
+The plugin has two tabs, each responsible for its part of the work.
+
+#### “Trees” Tab
+
+This tab is for managing the trees themselves. Here you can:
+
+- create new trees;
+- view the list of already created trees;
+- change the name and description of a tree;
+- delete an entire tree.
+
+#### “Edit Tree” Tab
+
+This tab is for filling a tree with elements. Here you can:
+
+- select which tree you are working with;
+- add elements of different types;
+- configure the order, nesting, and visibility of elements;
+- save changes.
+
+Simply put: first you create a container on the “Trees” tab, and then you fill it with content on the “Edit Tree” tab.
+
+### Creating Your First Tree
+
+Let’s create the first tree. Follow these steps.
+
+1. Make sure you are on the **“Trees”** tab. If not, click it.
+2. Find the **“Add Tree”** block.
+3. In the **“Tree Name”** field, enter a name. For example, *Product Documentation* or *Site Help*. This name will be visible to you in the tree list.
+4. In the **“Description”** field, you can enter a short note. This is optional but useful if you have several trees. For example, *User guide for the product filter module*.
+5. Click the **“Create”** button.
+
+After clicking, the tree will appear in the “Tree List” table. You will see:
+
+- **ID** — a number assigned automatically. You will need it later to display the tree on the site.
+- **Tree Name** — what you entered.
+- **Description** — your note.
+- **Actions** — buttons for working with the tree: “Items”, “Edit”, “Delete”.
+
+Remember the ID of your tree. For example, if this is the first tree, its ID is **1**.
+
+### What a Tree Is and Why You Need It
+
+A tree is a structure into which you add menu or table-of-contents items. Imagine that the tree is a frame, and the elements are individual branches. Thanks to the tree, you can combine pages from different categories, add external links, and arrange them in a convenient order.
+
+You can create multiple trees. For example, one for documentation, another for the “Help” section, and a third for links to external resources. Each tree will be a separate list on the site.
+
+### Opening a Tree for Filling
+
+After creating a tree, you need to start filling it. To do this, do one of the following:
+
+- Go to the **“Edit Tree”** tab. If the tree was just created, it will be selected automatically.
+- Or on the “Trees” tab, click the **“Items”** button next to the desired tree.
+
+Now you are on the “Edit Tree” tab. At the top of the screen, you will see which tree you are editing, for example: **“Edit Tree: Product Documentation”**.
+
+Below you will see the element table. It is empty now. Under the table is the **“Add Element”** form — that is what we will use to add items.
+
+### Add Element Form
+
+The “Add Element” form contains several fields:
+
+- **Type** — a dropdown where you select what you are adding: “Category”, “Page”, or “Custom Link”.
+- **Category** — appears only when the “Category” type is selected; it is a dropdown of all page categories on your site.
+- **Page** — appears only when the “Page” type is selected; it is a dropdown of all published pages.
+- **URL** — appears only when the “Custom Link” type is selected; enter the address here.
+- **Title** — a text field where you can enter your own text for the menu item. If left empty, the category or page’s own title will be used.
+- **Parent** — a dropdown of all already added elements, allowing you to choose where to nest the new item. By default, “Top Level” is selected, meaning the item will be at the first level of the tree.
+
+Now let’s look at adding each element type separately.
+
+### Adding a Category Element
+
+A category is a section of the site that may already contain pages. By adding a category to the tree, you create an item that leads to that category.
+
+Let’s say you have a category called “Articles”. We want to add it to the tree as the first item.
+
+1. In the **“Add Element”** form, find the **“Type”** field and select **“Category”** from the list.
+2. A new field — **“Category”** — will appear. Click it to open the list of all categories on your site.
+3. Select the desired category, for example, “Articles”.
+4. In the **“Title”** field, you can enter your own text if you want the menu item to have a different name than the category. For example, enter *Useful Articles*. If left empty, the category name “Articles” will be displayed.
+5. Leave **“Top Level”** in the **“Parent”** field, since this is the first item and should be at the first level.
+6. Click the **“Add”** button.
+
+After that, the element will appear in the table above. You will see a row with the ID, type “Category”, the selected category name, title, parent “Top Level”, order (e.g., 1), and the “Enabled” checkbox (checked by default).
+
+### Adding a Page Element
+
+A page is a separate article or material on the site. You can add any published page to the tree, even if it is in a different category.
+
+Suppose you have a page titled “How to Install the Module”. Let’s add it as a nested item under the “Articles” category.
+
+1. In the **“Add Element”** form, select the **“Page”** type.
+2. The **“Page”** field will appear. Click it to open the list of all published pages.
+3. Find and select the page “How to Install the Module”.
+4. In the **“Title”** field, you can enter your own text, for example *Module Installation*. If left empty, the page title will be displayed.
+5. In the **“Parent”** field, select the previously added element “Useful Articles” (or “Articles” if you left the default title). To do this, click the list and choose the desired item.
+6. Click the **“Add”** button.
+
+Now a new row will appear in the table. The “Parent” column will show the selected element. This means the page will be nested under it and will be displayed with an indent on the site.
+
+### Adding a Custom Link Element
+
+A custom link is any internet address: another page on your site, an external site, a document, or a file. This type is suitable when you need to add something that is not among the pages or categories of Cotonti.
+
+Let’s add a link to an external resource, such as a support forum.
+
+1. In the **“Add Element”** form, select the **“Custom Link”** type.
+2. The **“URL”** field will appear. Enter the full address, for example `https://forum.example.com`.
+3. In the **“Title”** field, be sure to enter the text that will be displayed in the menu. For example, *Support Forum*. If you don’t enter it, the URL itself will become the title, which is not pretty.
+4. In the **“Parent”** field, if necessary, select which element to nest the link under. If left as “Top Level”, the link will be a separate first-level item.
+5. Click **“Add”**.
+
+The link will appear in the table. The “Link to Object” column will show the URL, and the “Type” column will show “Custom Link”.
+
+### Managing Elements After Adding
+
+After adding several elements, you can change their order, nesting, and visibility directly in the table.
+
+The element table has the following columns:
+
+- **ID** — element number, cannot be changed.
+- **Type** — shows what it is: category, page, or link.
+- **Link to Object** — category or page name, or URL.
+- **Title** — text field, can be edited.
+- **Parent** — dropdown. Select another parent to move the element to a different branch.
+- **Order** — a number. The smaller the number, the higher the element among siblings with the same parent.
+- **Enabled** — checkbox. If checked, the element is displayed on the site. Uncheck to temporarily hide it.
+- **Actions** — “Delete” button.
+
+To change the order, simply enter new numbers in the “Order” column. For example, you have three top-level items. Set them to 1, 2, 3. If you want an item to be first, set it to 1 and the others to 2 and 3.
+
+To change nesting, select a different parent in the “Parent” column. If you choose “Top Level”, the element becomes a standalone item.
+
+To hide an element, uncheck the “Enabled” box. You can later check it again.
+
+### Saving Changes
+
+After any edits in the element table, be sure to click the **“Save Changes”** button below the table. Only then will your changes take effect.
+
+### Conclusion
+
+Now you can:
+
+- create trees;
+- add categories, pages, and custom links to them;
+- configure order, nesting, and visibility of elements;
+- save changes.
+
+The created tree can be displayed on the site using the tree ID. If you work with templates yourself, use the call `{PHP|cot_toc_page_render(1)}`, where `1` is your tree ID. If a developer handles the templates, just pass them this ID.
+
+The plugin is ready to use. Good luck creating convenient and clear tables of contents!
+
+
+___
+
+
 # toc_page — плагин оглавления для Cotonti
 
 **Код плагина:** toc_page  
