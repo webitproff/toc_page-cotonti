@@ -608,7 +608,7 @@ A maximum of two additional languages are supported (plus the main one).
 3. Find Table of Contents Page and click “Remove”.
 4. Optionally delete the plugin files from the `plugins/toc_page` directory.
 
-> **Warning:** When removing the plugin, the `cot_toc_page_*` tables are usually not automatically deleted. If you want to completely clean the database, drop them manually via phpMyAdmin or execute `DROP TABLE IF EXISTS ...` SQL commands.
+> **Warning:** When removing the plugin, the `cot_toc_page_*` tables are usually deleted automatically. If **something goes wrong...**, then to completely clean the database, delete them manually via phpMyAdmin or execute the SQL commands `DROP TABLE IF EXISTS ...`.
 
 ---
 
