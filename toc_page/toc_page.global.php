@@ -17,10 +17,10 @@ Hooks=global
  * Support:             https://abuyfile.com/ru/forums/cotonti/custom/plugs
  * Cotonti CMF:         https://github.com/Cotonti/Cotonti
  *
- * Date: Aug 23, 2026
+ * Date: Aug 24, 2026
  *
  * @package toc_page
- * @version 1.0.1
+ * @version 1.1.4
  * @author webitproff
  * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
  * @license BSD
