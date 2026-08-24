@@ -1,19 +1,134 @@
 
-# toc_page — Table of Contents Plugin for Cotonti
+# Table of Contents Plugin for Cotonti
 
 **Plugin code:** toc_page  
-**Version:** 1.0.1  
-**Author:** webitproff  
-**License:** BSD  
+**Version:** 1.1.4  
+**Date:** 24-08-2026  
+**Author:** webitproff   
+**License:** BSD   
 **Source code:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
 
 The **toc_page** plugin is designed for creating and managing custom table-of-contents trees on a Cotonti website. It allows administrators to manually build documentation structures, knowledge bases, or navigation menus by combining categories, pages, and external links.
 
 **[Overview and purpose of the plugin Table of Contents Page](https://abuyfile.com/en/usersblog/review-toc-page-cotonti)**
 
+[![Version](https://img.shields.io/badge/version-1.1.4-green.svg)](https://github.com/webitproff/toc_page-cotonti/releases)
+[![Cotonti Compatibility](https://img.shields.io/badge/Cotonti-1.0-orange.svg)](https://github.com/Cotonti/Cotonti)
+[![PHP](https://img.shields.io/badge/PHP-8.5-purple.svg)](https://www.php.net/releases/8_5_0.php)
+[![MySQL](https://img.shields.io/badge/MySQL-8.4-blue.svg)](https://www.mysql.com/)
+[![Bootstrap v5.3.8](https://img.shields.io/badge/Bootstrap-v5.3.8-blueviolet.svg)](https://getbootstrap.com/)
+[![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://github.com/webitproff/toc_page-cotonti/blob/main/LICENSE)
+
 <img width="1536" height="1024" alt="Table of Contents Page plugin for Cotonti v1 +, PHP 8 5+, MySQL 8 4" src="https://github.com/user-attachments/assets/3a135a65-7271-470c-932f-b1f32a6064fb" />
 
 
+___
+## Press Release
+
+**Table of Contents Page (toc_page) for Cotonti — Version 1.1.4 Release**
+
+*August 24, 2026*
+
+---
+
+The development team of the **Table of Contents Page (toc_page)** plugin is pleased to announce the release of version **1.1.4**. This is a significant update aimed at improving administration convenience, performance with large data volumes, and expanding multilingual capabilities.
+
+The **toc_page** plugin is designed to create a manageable table of contents on Cotonti pages. It allows building hierarchical trees of items (categories, pages, custom links), manually sorting them, controlling visibility, and adding translations for titles and URLs.
+
+Version **1.1.4** focuses on fixing shortcomings of previous releases and introducing new features that make working with the plugin even more intuitive and efficient.
+
+---
+
+## Key Changes in Version 1.1.4
+
+### 1. Pagination for tree items and translations
+
+One of the main improvements is the introduction of page-by-page navigation (pagination) in the **“Edit Tree”** and **“Translations”** administrative tabs.
+
+Previously, with a large number of items (e.g., more than 500), they were all displayed on a single page, leading to slow loading and inconvenience. Now items and translations are split into pages (20 by default, configurable in the plugin settings).
+
+- In the **“Edit Tree”** tab, a flat list with pagination is displayed, preserving the usual sorting order.
+- In the **“Translations”** tab, pagination works similarly, allowing quick access to the desired items for translation.
+- All actions (save, add, delete) correctly keep the current page or reset it when necessary.
+
+Thanks to this, administrators can easily manage trees with hundreds and thousands of items without performance loss.
+
+### 2. Editing item type after creation
+
+A major drawback has been fixed: previously, after creating an item, it was impossible to change its type. If an item was created as a “Custom Link” (custom), it could not be turned into a “Page” or “Category”.
+
+Version **1.1.4** adds a **separate “Element” tab** (`edit_element`) that opens a full editing form:
+
+- Change the item type (category, page, custom link).
+- Configure the associated link (select category, page via AJAX Select2 search, or enter URL).
+- Edit the title, parent item, sorting order.
+- Enable/disable the item.
+
+An **“Edit”** button has been added to the tree item list. After saving changes, the administrator stays on the editing page rather than being redirected back to the tree, allowing immediate verification of the entered data.
+
+### 3. Fixed parent item dropdown lists
+
+An error introduced after pagination was fixed: in the dropdown lists for selecting a parent item (both in the item table and in the add form), only items from the current page were shown instead of all tree items.
+
+Now parent lists always contain **all tree items**, regardless of the selected page. This eliminates the inability to assign a parent located on another pagination page.
+
+### 4. User experience improvements
+
+- After saving an item, the edit page refreshes and the administrator remains on it, seeing the current data.
+- Minor fixes and code optimization for stable operation on PHP 8.5+ and MySQL 8.4.
+
+### 5. Expanded language support
+
+Added **official language packs**:
+
+- English (`toc_page.en.lang.php`)
+- Ukrainian (`toc_page.uk.lang.php`)
+
+The Russian language pack has been updated and supplemented with new strings.
+
+---
+
+## Compatibility
+
+The **toc_page 1.1.4** plugin is developed for **Cotonti v1.+** and tested on **PHP 8.5+** and **MySQL 8.4**. It is fully backward compatible with previous versions — data is preserved without changes, and no additional migration is required.
+
+---
+
+## Developer Quote
+
+> “We aimed to make managing tables of contents as convenient as possible even with very large trees. Pagination and the ability to edit item type are exactly the features our users were missing. Now the plugin is truly ready for use on large projects.”  
+> — **webitproff**, plugin author
+
+---
+
+## Useful Links
+
+- **Source code and updates:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
+- **Detailed documentation:** [abuyfile.com/ru/market/cotonti/plugs/toc-page-cotonti](https://abuyfile.com/ru/market/cotonti/plugs/toc-page-cotonti)
+- **Support and forum:** [abuyfile.com/ru/forums/cotonti/custom/plugs](https://abuyfile.com/ru/forums/cotonti/custom/plugs)
+- **Cotonti CMF:** [github.com/Cotonti/Cotonti](https://github.com/Cotonti/Cotonti)
+
+---
+
+## About the Plugin
+
+**Table of Contents Page (toc_page)** is a flexible tool for creating hierarchical tables of contents on Cotonti pages. It allows:
+
+- Creating unlimited numbers of TOC trees.
+- Adding items of three types: categories, pages, and custom links.
+- Manually sorting items and defining hierarchy.
+- Managing item visibility.
+- Translating titles and URLs into multiple languages.
+
+Distributed under the **BSD** license.
+
+---
+
+**Press contacts:**  
+Author: **[webitproff](https://abuyfile.com/ru/users/webitproff)**  
+
+Website: **[abuyfile.com](https://abuyfile.com/en/market/cotonti/toc-page-cotonti)**
+___
 
 ---
 
@@ -463,12 +578,121 @@ ___
 # toc_page — плагин оглавления для Cotonti
 
 **Код плагина:** toc_page  
-**Версия:** 1.0.1  
+**Версия:** 1.1.4 
 **Автор:** webitproff  
 **Лицензия:** BSD  
 **Исходный код:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
 
 Плагин **toc_page** предназначен для создания и управления произвольными деревьями оглавления на сайте Cotonti. Он позволяет администратору вручную собирать структуру документации, базы знаний или навигационного меню, комбинируя категории, страницы и внешние ссылки.
+
+
+___
+# Пресс-релиз
+
+**Table of Contents Page (toc_page) для Cotonti — релиз версии 1.1.4**
+
+*24 августа 2026 г.*
+
+---
+
+Команда разработчиков плагина **Table of Contents Page (toc_page)** рада сообщить о выходе версии **1.1.4**. Это значительное обновление, направленное на повышение удобства администрирования, производительности при работе с большими объёмами данных и расширение мультиязычных возможностей.
+
+Плагин **toc_page** предназначен для создания управляемого оглавления на страницах Cotonti. Он позволяет строить иерархические деревья элементов (категории, страницы, произвольные ссылки), вручную сортировать их, управлять видимостью и добавлять переводы заголовков и URL.
+
+В версии **1.1.4** основное внимание уделено исправлению недостатков предыдущих релизов и внедрению новых функций, которые делают работу с плагином ещё более интуитивной и эффективной.
+
+---
+
+## Ключевые изменения в версии 1.1.4
+
+### 1. Пагинация для элементов дерева и переводов
+
+Одним из главных улучшений стало внедрение постраничной навигации (пагинации) в административных вкладках **«Редактирование дерева»** и **«Переводы»**.
+
+Ранее при большом количестве элементов (например, более 500) все они выводились на одной странице, что приводило к замедлению загрузки и неудобству работы. Теперь элементы и переводы разбиваются на страницы (по умолчанию 20, количество настраивается в конфигурации плагина).
+
+- На вкладке **«Редактирование дерева»** отображается плоский список с пагинацией, сохраняющий привычный порядок сортировки.
+- На вкладке **«Переводы»** пагинация работает аналогичным образом, позволяя быстро находить нужные элементы для перевода.
+- Все действия (сохранение, добавление, удаление) корректно сохраняют текущую страницу или сбрасывают её при необходимости.
+
+Благодаря этому администраторы могут легко управлять деревьями с сотнями и тысячами элементов без потери производительности.
+
+### 2. Редактирование типа элемента после создания
+
+Исправлена серьёзная недоработка: раньше после создания элемента нельзя было изменить его тип. Если элемент был создан как «Произвольная ссылка» (custom), его нельзя было превратить в «Страницу» или «Категорию».
+
+В версии **1.1.4** добавлена **отдельная вкладка «Элемент»** (`edit_element`), которая открывает полноценную форму редактирования:
+
+- Изменение типа элемента (категория, страница, произвольная ссылка).
+- Настройка связанной ссылки (выбор категории, страницы через AJAX-поиск Select2 или ввод URL).
+- Редактирование заголовка, родительского элемента, порядка сортировки.
+- Включение/отключение элемента.
+
+Кнопка **«Редактировать»** добавлена в список элементов дерева. После сохранения изменений администратор остаётся на странице редактирования, а не перенаправляется обратно в дерево, что позволяет сразу убедиться в корректности внесённых данных.
+
+### 3. Исправление выпадающих списков родительских элементов
+
+Устранена ошибка, возникавшая после внедрения пагинации: в выпадающих списках выбора родительского элемента (как в таблице элементов, так и в форме добавления) отображались только элементы текущей страницы, а не все элементы дерева.
+
+Теперь списки родителей всегда содержат **все элементы дерева**, независимо от выбранной страницы. Это исключает невозможность назначить родителя, находящегося на другой странице пагинации.
+
+### 4. Улучшение пользовательского опыта
+
+- После сохранения элемента страница редактирования обновляется, и администратор остаётся на ней, видя актуальные данные.
+- Мелкие исправления и оптимизация кода для стабильной работы на PHP 8.5+ и MySQL 8.4.
+
+### 5. Расширение языковой поддержки
+
+Добавлены **официальные языковые пакеты**:
+
+- Английский (`toc_page.en.lang.php`)
+- Украинский (`toc_page.uk.lang.php`)
+
+Русский языковой пакет обновлён и дополнен новыми строками.
+
+---
+
+## Совместимость
+
+Плагин **toc_page 1.1.4** разработан для **Cotonti v1.+** и протестирован на **PHP 8.5+** и **MySQL 8.4**. Он полностью обратно совместим с предыдущими версиями — данные сохраняются без изменений, дополнительная миграция не требуется.
+
+---
+
+## Цитата разработчика
+
+> «Мы стремились сделать управление оглавлениями максимально удобным даже при очень больших деревьях. Пагинация и возможность редактировать тип элемента — это именно те функции, которых не хватало нашим пользователям. Теперь плагин стал по-настоящему готовым к эксплуатации на крупных проектах».  
+> — **webitproff**, автор плагина
+
+---
+
+## Полезные ссылки
+
+- **Исходный код и обновления:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
+- **Подробная документация:** [abuyfile.com/ru/market/cotonti/plugs/toc-page-cotonti](https://abuyfile.com/ru/market/cotonti/plugs/toc-page-cotonti)
+- **Поддержка и форум:** [abuyfile.com/ru/forums/cotonti/custom/plugs](https://abuyfile.com/ru/forums/cotonti/custom/plugs)
+- **Cotonti CMF:** [github.com/Cotonti/Cotonti](https://github.com/Cotonti/Cotonti)
+
+---
+
+## О плагине
+
+**Table of Contents Page (toc_page)** — это гибкий инструмент для создания иерархических оглавлений на страницах Cotonti. Он позволяет:
+
+- Создавать неограниченное количество деревьев оглавления.
+- Добавлять элементы трёх типов: категории, страницы и произвольные ссылки.
+- Вручную сортировать элементы и задавать иерархию.
+- Управлять видимостью элементов.
+- Переводить заголовки и URL на несколько языков.
+
+Распространяется под лицензией **BSD**.
+
+---
+
+**Контакты для прессы:**  
+Автор: webitproff  
+Email: [указан в репозитории]  
+Веб-сайт: [abuyfile.com](https://abuyfile.com)
+___
 
 ---
 
