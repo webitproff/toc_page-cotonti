@@ -21,6 +21,7 @@ The **toc_page** plugin is designed for creating and managing custom table-of-co
 
 <img width="1536" height="1024" alt="Table of Contents Page plugin for Cotonti v1 +, PHP 8 5+, MySQL 8 4" src="https://github.com/user-attachments/assets/3a135a65-7271-470c-932f-b1f32a6064fb" />
 
+<img width="1906" height="953" alt="toc_page-cotonti_by_webitproff_2026" src="https://github.com/user-attachments/assets/1e4150df-f3f5-46c5-a81f-45f851b4cde5" />
 
 ___
 ## Press Release
