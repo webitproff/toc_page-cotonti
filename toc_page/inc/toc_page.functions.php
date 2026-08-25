@@ -244,6 +244,7 @@ function toc_page_display($items, $level, $tpl)
 {
     $t = new XTemplate(cot_tplfile($tpl, 'plug'));
     $t->assign('LIST_LEVEL', $level);
+	$t->assign('IS_ROOT', $level === 0 ? 1 : 0);
 
     foreach ($items as $item) {
         // Применяем i18n к заголовку и URL
@@ -303,13 +304,14 @@ function toc_page_display($items, $level, $tpl)
         if (empty($title)) {
             continue;
         }
-
-        $t->assign([
-            'ROW_URL'   => $url,
-            'ROW_TITLE' => $title,
-            'ROW_LEVEL' => $level,
-            'ROW_ITEMS' => '',
-        ]);
+		$t->assign([
+			'ROW_URL'          => $url,
+			'ROW_TITLE'        => $title,
+			'ROW_LEVEL'        => $level,
+			'ROW_ITEMS'        => '',
+			'ROW_ID'           => $item['item_id'],
+			'ROW_HAS_CHILDREN' => !empty($item['children']) ? 1 : 0,
+		]);
 
         if (!empty($item['children'])) {
             $sub = toc_page_display($item['children'], $level + 1, $tpl);
@@ -322,7 +324,6 @@ function toc_page_display($items, $level, $tpl)
     $t->parse('LIST');
     return $t->text('LIST');
 }
-
 /**
  * Получает локализованное название категории (если i18n активен)
  *
