@@ -1,0 +1,83 @@
+/* Table of Contents Page v1.4.0
+ * plugins/toc_page/css/toc_page.css
+ * Все селекторы начинаются с .tocpg, глобальных правил нет.
+ * Цвета берутся от цвета текста (currentColor), светлая/тёмная тема работает сама.
+ * Переопределение снаружи: --tocpg-accent (раскрытая стрелка), --tocpg-current (текущая страница).
+ */
+.tocpg { display: block; color: inherit; line-height: 1.45; }
+.tocpg *, .tocpg *::before, .tocpg *::after { box-sizing: border-box; }
+.tocpg .tocpg-list { list-style: none; margin: 0; padding: 0; }
+.tocpg .tocpg-item { list-style: none; margin: 0; padding: 0; }
+.tocpg .tocpg-item::marker { content: ""; }
+.tocpg details { display: block; margin: 0; padding: 0; }
+.tocpg a { color: inherit; text-decoration: none; }
+.tocpg a:hover { text-decoration: underline; }
+.tocpg a[aria-current="page"] { color: var(--tocpg-current, var(--bs-link-color, #0d6efd)); font-weight: 600; }
+
+.tocpg .tocpg-row { display: flex; align-items: center; gap: .5rem; padding: .25rem 0; margin: 0; }
+.tocpg summary.tocpg-row { cursor: pointer; list-style: none; }
+.tocpg summary.tocpg-row::-webkit-details-marker { display: none; }
+.tocpg summary.tocpg-row::marker { content: ""; }
+.tocpg summary.tocpg-row:focus-visible { outline: 2px solid var(--tocpg-current, #0d6efd); outline-offset: 2px; border-radius: 4px; }
+
+.tocpg .tocpg-chev, .tocpg .tocpg-ph { flex: 0 0 24px; width: 24px; height: 24px; }
+.tocpg .tocpg-chev {
+	display: inline-flex; align-items: center; justify-content: center;
+	border-radius: 4px;
+	border: 1px solid rgba(128, 128, 128, .4);
+	border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+	background: rgba(128, 128, 128, .1);
+	background: color-mix(in srgb, currentColor 7%, transparent);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+.tocpg summary.tocpg-row:hover .tocpg-chev { background: rgba(128, 128, 128, .2); background: color-mix(in srgb, currentColor 14%, transparent); }
+.tocpg .tocpg-chev svg { display: block; width: 20px; height: 20px; fill: currentColor; opacity: .75; transition: transform .2s ease; }
+.tocpg details[open] > summary .tocpg-chev { color: var(--tocpg-accent, #27ae60); }
+.tocpg details[open] > summary .tocpg-chev svg { transform: rotate(90deg); opacity: 1; }
+
+/* корневой уровень крупнее */
+.tocpg .tocpg-l0 .tocpg-chev, .tocpg .tocpg-l0 .tocpg-ph,
+.tocpg .tocpg-l0 > .tocpg-chev, .tocpg .tocpg-l0 > .tocpg-ph { flex-basis: 32px; width: 32px; height: 32px; }
+.tocpg .tocpg-l0 .tocpg-chev svg { width: 28px; height: 28px; }
+
+/* вложенный список и направляющая линия */
+.tocpg .tocpg-sub {
+	margin-left: 11px; padding-left: 1rem;
+	border-left: 2px solid rgba(128, 128, 128, .25);
+	border-left-color: color-mix(in srgb, currentColor 15%, transparent);
+}
+.tocpg summary.tocpg-l0 + .tocpg-sub { margin-left: 15px; }
+
+/* плавное раскрытие (новые Chrome/Edge/Safari; в остальных - мгновенно, но работает) */
+.tocpg { interpolate-size: allow-keywords; }
+.tocpg details::details-content { block-size: 0; overflow: hidden; }
+.tocpg details[open]::details-content { block-size: auto; }
+.tocpg[data-tocpg-ready] details::details-content { transition: block-size .3s ease, content-visibility .3s allow-discrete; }
+
+@media (prefers-reduced-motion: reduce) {
+	.tocpg[data-tocpg-ready] details::details-content, .tocpg .tocpg-chev svg { transition: none !important; }
+}
+
+.tocpg .tocpg-row > a {
+	display: inline-block;
+	color: var(--accent-light, #ff5100);
+	text-decoration: none;
+	font-weight: 500;
+	transition: color .15s ease;
+}
+
+.tocpg .tocpg-row > a:hover {
+	color: var(--tocpg-current, var(--bs-link-color, #0d6efd));
+	text-decoration: underline;
+}
+
+.tocpg .tocpg-row > a:focus-visible {
+	outline: 2px solid var(--tocpg-current, #0d6efd);
+	outline-offset: 3px;
+	border-radius: 2px;
+}
+
+.tocpg .tocpg-row > a[aria-current="page"] {
+	color: var(--tocpg-current, var(--bs-link-color, #0d6efd));
+	font-weight: 600;
+}

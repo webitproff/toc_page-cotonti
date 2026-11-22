@@ -1,0 +1,10 @@
+# File: plugins/readme_viewer/_dir_readme_viewer_list/.htaccess
+#
+# Библиотека README-файлов. Отдавать её должен только сам плагин
+# через index.php?e=readme_viewer, а не веб-сервер напрямую.
+# Запрещаем листинг директории и прямой доступ к исполняемым файлам
+# на случай, если кто-то по ошибке загрузит сюда не только README.
+Options -Indexes
+<FilesMatch "\.(php|php\d|phtml|phar|cgi|pl|py|sh|exe|htaccess)$">
+    Require all denied
+</FilesMatch>
