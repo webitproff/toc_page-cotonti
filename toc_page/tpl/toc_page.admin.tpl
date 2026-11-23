@@ -157,8 +157,14 @@
                             <input type="checkbox" name="items[{ITEM_ID}][enabled]" value="1" {ITEM_ENABLED_CHECKED}>
 						</td>
                         <td>
-                            <a href="{ITEM_EDIT_URL}" class="btn btn-sm btn-primary">{PHP.L.toc_page_edit}</a>
-                            <a href="{ITEM_DELETE_URL}" class="btn btn-sm btn-danger">{PHP.L.Delete}</a>
+							<div class="row g-3">
+								<div class="col">
+									<a href="{ITEM_EDIT_URL}" class="btn btn-success">{PHP.L.toc_page_edit}</a>
+								</div>
+								<div class="col">
+									<a href="{ITEM_DELETE_URL}" class="btn btn-sm btn-outline-danger">{PHP.L.Delete}</a>
+								</div>
+							</div>
 						</td>
 					</tr>
                     <!-- END: EDIT_ITEM -->
