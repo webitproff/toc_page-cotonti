@@ -10,10 +10,10 @@
 	* Support:             https://abuyfile.com/ru/forums/cotonti/custom/plugs
 	* Cotonti CMF:         https://github.com/Cotonti/Cotonti
 	*
-	* Date: Aug 24, 2026
+	* Date: Nov 23, 2026
 	*
 	* @package toc_page
-	* @version 1.1.4
+	* @version 1.4.5
 	* @author webitproff
 	* @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
 	* @license BSD
@@ -126,9 +126,9 @@
                     <tr>
                         <th style="width:50px;">ID</th>
                         <th>{PHP.L.toc_page_item_type}</th>
-                        <th>{PHP.L.toc_page_item_ref}</th>
-                        <th>{PHP.L.toc_page_item_title}</th>
-                        <th>{PHP.L.toc_page_item_parent}</th>
+                        <th class="item-ref-column">{PHP.L.toc_page_item_ref}</th>
+                        <th class="title-column">{PHP.L.toc_page_item_title}</th>
+                        <th class="parent-column">{PHP.L.toc_page_item_parent}</th>
                         <th>{PHP.L.toc_page_item_sort}</th>
                         <th>{PHP.L.toc_page_item_enabled}</th>
                         <th>{PHP.L.toc_page_item_actions}</th>
@@ -136,16 +136,18 @@
 				</thead>
                 <tbody>
                     <!-- BEGIN: EDIT_ITEM -->
-                    <tr>
+                    <tr id="item-{ITEM_ID}">
                         <td>{ITEM_ID}</td>
                         <td>{ITEM_TYPE}</td>
-                        <td>{ITEM_REF_INFO}</td>
-                        <td>
-                            <input type="text" name="items[{ITEM_ID}][title]" value="{ITEM_TITLE_VALUE}" class="form-control">
+                        <td class="item-ref-column">{ITEM_REF_INFO}</td>
+						
+						<td class="title-column">
+							<textarea name="items[{ITEM_ID}][title]" rows="3" maxlength="255" class="form-control">{ITEM_TITLE_VALUE}</textarea>
 						</td>
-                        <td>
-                            <select name="items[{ITEM_ID}][parent_id]" class="form-select">
-                                {ITEM_PARENT_SELECT}
+						
+						<td class="parent-column">
+							<select name="items[{ITEM_ID}][parent_id]" class="form-select">
+								{ITEM_PARENT_SELECT}
 							</select>
 						</td>
                         <td>
@@ -213,8 +215,42 @@
     <!-- IF {PHP.tab} == 'edit_element' -->
     <div class="card p-3">
         <h3>{PHP.L.toc_page_edit_element}: {ELEMENT_ID}</h3>
+        <p><a href="{ELEMENT_BACK_URL}" class="btn btn-sm btn-outline-secondary">&larr; {ELEMENT_BACK_LABEL}</a></p>
         <p>{PHP.L.toc_page_tree_title}: {ELEMENT_TREE_TITLE}</p>
-		
+        <div class="alert alert-info mb-3">
+            <div class="fw-bold mb-2">{ELEMENT_CURRENT_HEADING}</div>
+            <div><span class="text-muted">{PHP.L.toc_page_item_type}:</span> <strong>{ELEMENT_CURRENT_TYPE}</strong></div>
+            <!-- IF {ELEMENT_CURRENT_IS_CUSTOM} -->
+            <div>
+                <span class="text-muted">{ELEMENT_CURRENT_LABEL_URL}:</span>
+                <!-- IF {ELEMENT_CURRENT_CUSTOM_URL} -->
+                <a href="{ELEMENT_CURRENT_CUSTOM_URL}" target="_blank" rel="noopener">{ELEMENT_CURRENT_CUSTOM_URL}</a>
+                <!-- ELSE -->
+                <span class="text-muted">&mdash;</span>
+                <!-- ENDIF -->
+            </div>
+            <!-- ELSE -->
+            <div>
+                <span class="text-muted">{ELEMENT_CURRENT_LABEL_TITLE}:</span>
+                <strong>{ELEMENT_CURRENT_TITLE}</strong>
+            </div>
+            <!-- IF {ELEMENT_CURRENT_URL} -->
+            <div>
+                <span class="text-muted">{ELEMENT_CURRENT_LABEL_URL}:</span>
+                <a href="{ELEMENT_CURRENT_URL}" target="_blank" rel="noopener">{ELEMENT_CURRENT_URL}</a>
+            </div>
+            <!-- ENDIF -->
+            <!-- IF {ELEMENT_CURRENT_STATUS} -->
+            <div class="text-danger">{ELEMENT_CURRENT_STATUS}</div>
+            <!-- ENDIF -->
+            <!-- IF {ELEMENT_CURRENT_OVERRIDE} -->
+            <div>
+                <span class="text-muted">{ELEMENT_CURRENT_LABEL_OVERRIDE}:</span>
+                <a href="{ELEMENT_CURRENT_OVERRIDE}" target="_blank" rel="noopener">{ELEMENT_CURRENT_OVERRIDE}</a>
+            </div>
+            <!-- ENDIF -->
+            <!-- ENDIF -->
+        </div>
         <form method="post" action="{ELEMENT_FORM_URL}">
             <div class="row g-3">
                 <div class="col-md-3">
@@ -262,7 +298,7 @@
 			</div>
             <div class="mt-3">
                 <button type="submit" class="btn btn-success">{PHP.L.Update}</button>
-                <a href="{ELEMENT_BACK_URL}" class="btn btn-outline-secondary">{PHP.L.toc_page_back}</a>
+                <a href="{ELEMENT_BACK_URL}" class="btn btn-outline-secondary">&larr; {ELEMENT_BACK_LABEL}</a>
 			</div>
 		</form>
 	</div>
@@ -377,6 +413,47 @@
 	background-color: #0d6efd; /* синий Bootstrap primary */
 	color: #fff;
     }
+	
+	th.parent-column,
+	td.parent-column {
+    width: 320px !important;
+    max-width: 320px !important;
+    overflow: hidden;
+	}
+	
+	td.parent-column select {
+    width: 100%;
+    max-width: 100%;
+	}
+	
+	th.title-column,
+	td.title-column {
+    width: 320px !important;
+    max-width: 320px !important;
+    overflow: hidden;
+	}
+	
+	td.title-column {
+    width: 100%;
+    max-width: 100%;
+	}
+	
+	th.item-ref-column,
+	td.item-ref-column {
+    width: 320px !important;
+    max-width: 320px !important;
+    overflow: hidden;
+	}
+	
+	td.item-ref-column {
+    width: 100%;
+    max-width: 100%;
+	}
+	
+	
+		/* Строка, к которой вернулись кнопкой «Назад» (якорь #item-ID) */
+		tr[id^="item-"] { scroll-margin-top: 80px; }
+		tr[id^="item-"]:target > td { box-shadow: inset 0 0 0 9999px rgba(255, 193, 7, .30); }
 </style>
 
 <script>

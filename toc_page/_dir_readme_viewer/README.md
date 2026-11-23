@@ -2,8 +2,8 @@
 # Table of Contents Plugin for Cotonti
 
 **Plugin code:** toc_page  
-**Version:** 1.4.0  
-**Date:** **November 22, 2026**  
+**Version:** 1.4.5  
+**Date:** **November 23, 2026**  
 **Author:** webitproff   
 **License:** BSD   
 **Source code:** [github.com/webitproff/toc_page-cotonti](https://github.com/webitproff/toc_page-cotonti)
@@ -12,7 +12,7 @@ The **toc_page** plugin is designed for creating and managing custom table-of-co
 
 **[Overview and purpose of the plugin Table of Contents Page](https://abuyfile.com/en/usersblog/review-toc-page-cotonti)**
 
-[![Version](https://img.shields.io/badge/version-1.1.4-green.svg)](https://github.com/webitproff/toc_page-cotonti/releases)
+[![Version](https://img.shields.io/badge/version-1.4.5-green.svg)](https://github.com/webitproff/toc_page-cotonti/releases)
 [![Cotonti Compatibility](https://img.shields.io/badge/Cotonti-1.0-orange.svg)](https://github.com/Cotonti/Cotonti)
 [![PHP](https://img.shields.io/badge/PHP-8.5-purple.svg)](https://www.php.net/releases/8_5_0.php)
 [![MySQL](https://img.shields.io/badge/MySQL-8.4-blue.svg)](https://www.mysql.com/)
@@ -1048,8 +1048,8 @@ The script and styles use standard browser features: the `<details>/<summary>` e
 
 | | |
 |---|---|
-| Версия | **1.4.0** |
-| Дата | **22 ноября 2026** |
+| Версия | **1.4.5** |
+| Дата | **23 ноября 2026** |
 | Код расширения | `toc_page` |
 | Автор | webitproff |
 | Лицензия | BSD |

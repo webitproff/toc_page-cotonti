@@ -1,4 +1,4 @@
-/* Table of Contents Page v1.4.0
+/* Table of Contents Page v1.4.5
  * plugins/toc_page/css/toc_page.css
  * Все селекторы начинаются с .tocpg, глобальных правил нет.
  * Цвета берутся от цвета текста (currentColor), светлая/тёмная тема работает сама.
@@ -20,7 +20,8 @@
 .tocpg summary.tocpg-row::marker { content: ""; }
 .tocpg summary.tocpg-row:focus-visible { outline: 2px solid var(--tocpg-current, #0d6efd); outline-offset: 2px; border-radius: 4px; }
 
-.tocpg .tocpg-chev, .tocpg .tocpg-ph { flex: 0 0 24px; width: 24px; height: 24px; }
+/* .tocpg .tocpg-chev, .tocpg .tocpg-ph { flex: 0 0 24px; width: 24px; height: 24px; } */
+.tocpg .tocpg-chev, .tocpg .tocpg-ph { flex: 0 0 4px; width: 24px; height: 24px; }
 .tocpg .tocpg-chev {
 	display: inline-flex; align-items: center; justify-content: center;
 	border-radius: 4px;

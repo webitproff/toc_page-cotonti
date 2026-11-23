@@ -18,19 +18,23 @@ Hooks=tools
  *           Действия задаются GET-параметром `a`.
  * Path:     plugins/toc_page/toc_page.admin.php
  *
- * Date: Nov 22, 2026
+ * Table of Contents Page plugin for Cotonti v1.+, PHP v8.5, MySQL-8.4
+ *
+ * Source and updates   https://github.com/webitproff/toc_page-cotonti
+ *
+ * Date: Nov 23, 2026
  *
  * @package toc_page
- * @version 1.4.0
+ * @version 1.4.5
  * @author webitproff
  * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
  * @license BSD
  */
-
+ 
 defined('COT_CODE') or die('Wrong URL');
 
-require_once cot_langfile('toc_page', 'plug');
-require_once cot_incfile('toc_page', 'plug', 'functions');
+
+require_once cot_incfile('toc_page', 'plug');
 require_once cot_incfile('forms');
 
 $tab = cot_import('tab', 'G', 'ALP') ?: 'trees';
@@ -383,7 +387,7 @@ if ($tab == 'edit' && $treeId > 0) {
                 'ITEM_SORT'            => $item['item_sort'],
                 'ITEM_ENABLED_CHECKED' => $item['item_enabled'] ? 'checked="checked"' : '',
                 'ITEM_DELETE_URL'      => cot_confirm_url(cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit', 'tree' => $treeId, 'a' => 'delete_item', 'item_id' => $item['item_id']])),
-                'ITEM_EDIT_URL'        => cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $item['item_id']]),
+                'ITEM_EDIT_URL'        => cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $item['item_id'], 'd' => $durl]),
             ]);
             $t->parse('MAIN.EDIT_ITEM');
         }
@@ -449,6 +453,10 @@ if ($tab == 'edit_element') {
     $treeId = (int)$item['tree_id'];
     $tree = Cot::$db->query("SELECT * FROM " . Cot::$db->toc_page_trees . " WHERE tree_id = ?", [$treeId])->fetch();
 
+    // Страница пагинации списка элементов, с которой пришли (для кнопки «Назад»)
+    list($pgBack, $dBack, $durlBack) = cot_import_pagenav('d', $perPage);
+    $backPageParam = ((int)$durlBack > 0) ? ['d' => $durlBack] : [];
+
     // Сохранение изменений элемента
     if ($a == 'save_element' && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $type = cot_import('item_type', 'P', 'ALP');
@@ -482,7 +490,7 @@ if ($tab == 'edit_element') {
         );
 
         cot_message(Cot::$L['toc_page_msg_item_saved']);
-        cot_redirect(cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $itemId], '', true));
+        cot_redirect(cot_url('admin', array_merge(['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $itemId], $backPageParam), '', true));
     }
 
     $categories = [];
@@ -523,6 +531,51 @@ if ($tab == 'edit_element') {
         $pageSelectOld = cot_selectbox($item['item_ref'], 'item_ref_page', array_column($pages, 'page_id'), array_column($pages, 'page_title'), false);
     }
 
+    // Что сейчас выбрано в элементе: название и ссылка на объект
+    $cur = ['title' => '', 'url' => '', 'status' => ''];
+    if ($item['item_type'] == 'category') {
+        $catCode = $item['item_ref'];
+        if (isset(Cot::$structure['page'][$catCode])) {
+            $cur['title'] = Cot::$structure['page'][$catCode]['title'];
+            $cur['url'] = cot_url('page', ['c' => $catCode]);
+        } else {
+            $cur['title'] = (string)$catCode;
+            $cur['status'] = Cot::$L['toc_page_category_not_found'] ?? 'Категория не найдена';
+        }
+    } elseif ($item['item_type'] == 'page') {
+        $curPage = Cot::$db->query(
+            "SELECT page_id, page_title, page_cat, page_alias, page_state FROM " . Cot::$db->pages . " WHERE page_id = ?",
+            [(int)$item['item_ref']]
+        )->fetch();
+        if ($curPage) {
+            $cur['title'] = $curPage['page_title'];
+            $cur['url'] = cot_page_url($curPage);
+            if ((int)$curPage['page_state'] !== 0) {
+                $cur['status'] = Cot::$L['toc_page_page_not_published'] ?? 'Страница не опубликована (в дереве на сайте ссылка выводиться не будет)';
+            }
+        } else {
+            $cur['title'] = '#' . (int)$item['item_ref'];
+            $cur['status'] = Cot::$L['toc_page_page_not_found'] ?? 'Страница не найдена';
+        }
+    }
+
+    // Для категории и страницы собственный URL элемента (если задан) переопределяет ссылку на сайте
+    $curOverride = ($item['item_type'] != 'custom' && $item['item_url'] !== '') ? $item['item_url'] : '';
+
+    $t->assign([
+        'ELEMENT_CURRENT_HEADING'  => Cot::$L['toc_page_current_value'] ?? 'Текущее значение элемента',
+        'ELEMENT_CURRENT_IS_CUSTOM' => $item['item_type'] == 'custom' ? 1 : 0,
+        'ELEMENT_CURRENT_TYPE'     => Cot::$L['toc_page_type_' . $item['item_type']] ?? $item['item_type'],
+        'ELEMENT_CURRENT_LABEL_TITLE' => Cot::$L['toc_page_current_title'] ?? 'Название',
+        'ELEMENT_CURRENT_LABEL_URL'   => Cot::$L['toc_page_current_url'] ?? 'Ссылка',
+        'ELEMENT_CURRENT_LABEL_OVERRIDE' => Cot::$L['toc_page_current_override'] ?? 'Собственный URL элемента (переопределяет ссылку на сайте)',
+        'ELEMENT_CURRENT_TITLE'    => htmlspecialchars($cur['title']),
+        'ELEMENT_CURRENT_URL'      => $cur['url'],
+        'ELEMENT_CURRENT_STATUS'   => htmlspecialchars($cur['status']),
+        'ELEMENT_CURRENT_OVERRIDE' => htmlspecialchars($curOverride),
+        'ELEMENT_CURRENT_CUSTOM_URL' => htmlspecialchars($item['item_type'] == 'custom' ? $item['item_url'] : ''),
+    ]);
+
     $t->assign([
         'ELEMENT_ID'              => $item['item_id'],
         'ELEMENT_TREE_ID'         => $treeId,
@@ -536,8 +589,10 @@ if ($tab == 'edit_element') {
         'ELEMENT_PARENT_SELECT'   => $parentOptions,
         'ELEMENT_SORT'            => $item['item_sort'],
         'ELEMENT_ENABLED_CHECKED' => $item['item_enabled'] ? 'checked="checked"' : '',
-        'ELEMENT_FORM_URL'        => cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $itemId, 'a' => 'save_element']),
-        'ELEMENT_BACK_URL'        => cot_url('admin', ['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit', 'tree' => $treeId]),
+        'ELEMENT_FORM_URL'        => cot_url('admin', array_merge(['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit_element', 'item' => $itemId, 'a' => 'save_element'], $backPageParam)),
+        // Назад: тот же список, та же страница пагинации, прокрутка к строке этого элемента (#item-ID)
+        'ELEMENT_BACK_URL'        => cot_url('admin', array_merge(['m' => 'other', 'p' => 'toc_page', 'tab' => 'edit', 'tree' => $treeId], $backPageParam), '#item-' . $itemId),
+        'ELEMENT_BACK_LABEL'      => Cot::$L['toc_page_back'] ?? 'Назад к списку',
     ]);
 
     $t->parse('MAIN.EDIT_ELEMENT_FORM');

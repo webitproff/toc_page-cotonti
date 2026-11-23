@@ -1,5 +1,5 @@
 /**
- * Table of Contents Page v1.4.0
+ * Table of Contents Page v1.4.5
  * plugins/toc_page/js/toc_page.js
  *
  * Раскрытие/сворачивание обеспечивает нативный <details>, скрипт добавляет:

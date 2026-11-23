@@ -5,8 +5,8 @@ Code=toc_page
 Name=Table of Contents Page
 Description=Управляемое оглавление для страниц с ручной сортировкой, иерархией и поддержкой мультиязычности
 Category=administration-management
-Version=1.4.0
-Date=2026-11-22
+Version=1.4.5
+Date=2026-11-23
 Author=webitproff
 Copyright=(c) webitproff 2026 https://github.com/webitproff
 Notes=
@@ -35,14 +35,14 @@ toc_page_select2_use=10:radio::0:использовать поиск стате�
  * Purpose: Setup & Config File for the Table of Contents Page plugin
  * Path: plugins/toc_page/toc_page.setup.php
  *
- * Table of Contents Page plugin for Cotonti v1.+
+ * Table of Contents Page plugin for Cotonti v1.+, PHP v8.5, MySQL-8.4
  *
  * Source and updates   https://github.com/webitproff/toc_page-cotonti
  *
- * Date: Nov 22, 2026
+ * Date: Nov 23, 2026
  *
  * @package toc_page
- * @version 1.4.0
+ * @version 1.4.5
  * @author webitproff
  * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
  * @license BSD

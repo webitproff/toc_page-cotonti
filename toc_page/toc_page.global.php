@@ -10,10 +10,14 @@ Hooks=global
  * Purpose: Table of Contents Page plugin - global initialization
  * Path: plugins/toc_page/toc_page.global.php
  *
- * Date: Nov 22, 2026
+ * Table of Contents Page plugin for Cotonti v1.+, PHP v8.5, MySQL-8.4
+ *
+ * Source and updates   https://github.com/webitproff/toc_page-cotonti
+ *
+ * Date: Nov 23, 2026
  *
  * @package toc_page
- * @version 1.4.0
+ * @version 1.4.5
  * @author webitproff
  * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
  * @license BSD

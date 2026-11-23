@@ -13,10 +13,10 @@
  * Support:             https://abuyfile.com/ru/forums/cotonti/custom/plugs
  * Cotonti CMF:         https://github.com/Cotonti/Cotonti
  *
- * Date: Aug 24, 2026
+ * Date: Nov 23, 2026
  *
  * @package toc_page
- * @version 1.1.4
+ * @version 1.4.5
  * @author webitproff
  * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
  * @license BSD
@@ -139,3 +139,12 @@ $L['toc_page_page_not_found'] = 'Page not found';
 // SETTINGS HINTS (if needed separately)
 // ========================
 // already defined above
+
+// ========================
+// ВКЛАДКА «Редактирование элемента»
+// ========================
+$L['toc_page_current_value']    = 'Current element value';
+$L['toc_page_current_title']    = 'Title';
+$L['toc_page_current_url']      = 'Link';
+$L['toc_page_current_override'] = 'Element\'s own URL (overrides the link on the site)';
+$L['toc_page_page_not_published'] = 'The page is not published (no link will be output in the tree on the site)';
